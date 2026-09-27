@@ -1,0 +1,6 @@
+{
+  "source_repository": "sourcey/stompstart",
+  "source_commit": "1fdb9c87f7c5292dad07f919d1da4d9209c33d31",
+  "source_export": "contracts/startups/src/index.ts#startupProfileSchema",
+  "schema_sha256": "d3ca8875cf5c5c626b50f3c0082180606c70c6c35340651764029f611f9c6066"
+}

@@ -1,0 +1,13 @@
+proposal_contract: stompstart.launch-proposal/v1alpha1
+startup_slug: example-product
+launch_id: lch_aaaaaaaaaaaaaaaaaaaaaaaaaa
+startup_id: stp_aaaaaaaaaaaaaaaaaaaaaaaaaa
+kind: major_update
+title: Example Product 2.0
+summary: Describe what changed for users in this release.
+occurred_on:
+  precision: unknown
+date_basis: announced
+source_url: https://example.com/launch
+source_title: Official launch announcement
+source_locator: Opening announcement

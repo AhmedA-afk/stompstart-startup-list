@@ -15,6 +15,11 @@ if (createHash("sha256").update(schemaBytes).digest("hex") !== source.schema_sha
 }
 const schema = JSON.parse(schemaBytes.toString("utf8"));
 const validate = ajv.compile(schema);
+const launchSchemaBytes = await readFile(new URL("../launch.schema.json", import.meta.url));
+if (createHash("sha256").update(launchSchemaBytes).digest("hex") !== source.launch_schema_sha256) {
+  throw new Error("Launch schema differs from its recorded source export.");
+}
+const validateLaunch = ajv.compile(JSON.parse(launchSchemaBytes.toString("utf8")));
 const root = new URL("../startups/", import.meta.url);
 const names = (await readdir(root)).sort();
 const errors = [];
@@ -91,9 +96,47 @@ for (const name of names) {
   semantic(profile, name);
 }
 
+const launchRoot = new URL("../launches/", import.meta.url);
+const launchNames = (await readdir(launchRoot)).sort();
+const launchIds = new Map();
+for (const name of launchNames) {
+  if (name === ".gitkeep") continue;
+  if (!/^([a-z0-9]+(?:-[a-z0-9]+)*)-(lch_[0-9a-z]{26})\.yaml$/u.test(name)) {
+    errors.push(`launches/${name}: use <startup-slug>-<launch-id>.yaml`);
+    continue;
+  }
+  const file = join(fileURLToPath(launchRoot), name);
+  const document = YAML.parseDocument(await readFile(file, "utf8"), { uniqueKeys: true, strict: true });
+  if (document.errors.length) {
+    errors.push(...document.errors.map((error) => `launches/${name}: ${error.message}`));
+    continue;
+  }
+  const proposal = document.toJS({ maxAliasCount: 0 });
+  if (!validateLaunch(proposal)) {
+    errors.push(...(validateLaunch.errors ?? []).map((error) =>
+      `launches/${name}: ${error.instancePath || "/"} ${error.message}`));
+    continue;
+  }
+  if (name !== `${proposal.startup_slug}-${proposal.launch_id}.yaml`) {
+    errors.push(`launches/${name}: filename differs from the startup and launch identity`);
+  }
+  if (
+    proposal.launch_id === "lch_aaaaaaaaaaaaaaaaaaaaaaaaaa" ||
+    proposal.startup_id === "stp_aaaaaaaaaaaaaaaaaaaaaaaaaa" ||
+    proposal.title === "Example Product 2.0" ||
+    (URL.canParse(proposal.source_url) && new URL(proposal.source_url).hostname === "example.com")
+  ) {
+    errors.push(`launches/${name}: replace the example identity, claims and source`);
+  }
+  const prior = launchIds.get(proposal.launch_id);
+  if (prior) errors.push(`launches/${name}: launch ID is already used by ${prior}`);
+  else launchIds.set(proposal.launch_id, name);
+  checkUrl(proposal.source_url, `launches/${name}: source`, ["http:", "https:"]);
+}
+
 if (errors.length) {
   process.stderr.write(`${errors.join("\n")}\n`);
   process.exitCode = 1;
 } else {
-  process.stdout.write(`Validated ${names.filter((name) => name.endsWith(".yaml")).length} startup profiles.\n`);
+  process.stdout.write(`Validated ${names.filter((name) => name.endsWith(".yaml")).length} startup profiles and ${launchNames.filter((name) => name.endsWith(".yaml")).length} launch proposals.\n`);
 }

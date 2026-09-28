@@ -21,3 +21,10 @@ Passing CI is a shape check, not admission. Stompstart verifies the exact
 revision and evidence before a public release. An inaccessible website alone
 does not prove a startup closed. If a review identifies an error, amend the
 same PR; payment is never required to correct a record.
+
+To propose a launch for an already published startup, use
+`npm run new:launch -- <slug> <startup-id>`. A launch is a dated first release
+or major product update, not a second startup listing or a routine changelog
+item. Cite the original source and identify the passage that supports the
+claim. Use `precision: unknown` when the date cannot be established. Launch
+text has the same CC BY 4.0 terms and contributor credit as profile text.

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "new": "node scripts/new.mjs"
+    "new": "node scripts/new.mjs",
+    "new:launch": "node scripts/new-launch.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

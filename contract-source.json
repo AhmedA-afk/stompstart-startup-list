@@ -2,5 +2,9 @@
   "source_repository": "sourcey/stompstart",
   "source_commit": "1fdb9c87f7c5292dad07f919d1da4d9209c33d31",
   "source_export": "contracts/startups/src/index.ts#startupProfileSchema",
-  "schema_sha256": "d3ca8875cf5c5c626b50f3c0082180606c70c6c35340651764029f611f9c6066"
+  "schema_sha256": "d3ca8875cf5c5c626b50f3c0082180606c70c6c35340651764029f611f9c6066",
+  "launch_source_repository": "sourcey/stompstart",
+  "launch_source_commit": "dc38332eae284b28148967f6ab608451659aeb4c",
+  "launch_source_export": "contracts/launches/src/index.ts#launchProposalSchema",
+  "launch_schema_sha256": "9972b778d03824a9af54b69f941a393ad16c7f8c295ce4f160b7a12e02fc4b71"
 }

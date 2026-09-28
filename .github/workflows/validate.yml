@@ -1,4 +1,4 @@
-name: Validate startup profiles
+name: Validate public proposals
 on:
   pull_request:
   push:

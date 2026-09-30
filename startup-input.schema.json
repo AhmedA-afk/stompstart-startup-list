@@ -1,0 +1,2532 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "tagline": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000
+    },
+    "website": {
+      "type": "string",
+      "maxLength": 2000,
+      "format": "uri"
+    },
+    "access": {
+      "minItems": 1,
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "signup",
+              "download",
+              "install",
+              "waitlist",
+              "demo",
+              "browse",
+              "contact_sales"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "kind",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "categories": {
+      "minItems": 1,
+      "maxItems": 3,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60,
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "prelaunch",
+        "beta",
+        "live"
+      ]
+    },
+    "pricing": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "free"
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "usage_based"
+            },
+            "pricing_url": {
+              "type": "string",
+              "maxLength": 2000,
+              "format": "uri"
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "freemium"
+            },
+            "entry_price": {
+              "type": "object",
+              "properties": {
+                "amount_minor": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100000000
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[a-z]{3}$"
+                },
+                "interval": {
+                  "type": "string",
+                  "enum": [
+                    "one_off",
+                    "month",
+                    "year"
+                  ]
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency",
+                "interval"
+              ],
+              "additionalProperties": false
+            },
+            "pricing_url": {
+              "type": "string",
+              "maxLength": 2000,
+              "format": "uri"
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "paid"
+            },
+            "entry_price": {
+              "type": "object",
+              "properties": {
+                "amount_minor": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100000000
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[a-z]{3}$"
+                },
+                "interval": {
+                  "type": "string",
+                  "enum": [
+                    "one_off",
+                    "month",
+                    "year"
+                  ]
+                }
+              },
+              "required": [
+                "amount_minor",
+                "currency",
+                "interval"
+              ],
+              "additionalProperties": false
+            },
+            "pricing_url": {
+              "type": "string",
+              "maxLength": 2000,
+              "format": "uri"
+            }
+          },
+          "required": [
+            "model",
+            "entry_price"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "contact_sales"
+            },
+            "pricing_url": {
+              "type": "string",
+              "maxLength": 2000,
+              "format": "uri"
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "unknown"
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "company": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "relationship": {
+          "type": "string",
+          "enum": [
+            "independent",
+            "parent",
+            "subsidiary",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "problem": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "audience": {
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    },
+    "highlights": {
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400
+          }
+        },
+        "required": [
+          "title",
+          "detail"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "platforms": {
+      "maxItems": 9,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "web",
+          "ios",
+          "android",
+          "macos",
+          "windows",
+          "linux",
+          "browser_extension",
+          "hardware",
+          "other"
+        ]
+      }
+    },
+    "people": {
+      "maxItems": 20,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "name",
+          "role"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "country"
+      ],
+      "additionalProperties": false
+    },
+    "founded": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "const": "day"
+            },
+            "value": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            }
+          },
+          "required": [
+            "precision",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "const": "month"
+            },
+            "value": {
+              "type": "string",
+              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+            }
+          },
+          "required": [
+            "precision",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "const": "year"
+            },
+            "value": {
+              "type": "string",
+              "pattern": "^\\d{4}$"
+            }
+          },
+          "required": [
+            "precision",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "const": "unknown"
+            }
+          },
+          "required": [
+            "precision"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "links": {
+      "maxItems": 24,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "docs",
+              "blog",
+              "changelog",
+              "status",
+              "press",
+              "careers",
+              "community",
+              "source",
+              "social"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "format": "uri"
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "x",
+              "linkedin",
+              "github",
+              "youtube",
+              "instagram",
+              "facebook",
+              "tiktok",
+              "mastodon",
+              "bluesky",
+              "discord",
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "surfaces": {
+      "maxItems": 24,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "api"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "protocol": {
+                "type": "string",
+                "enum": [
+                  "rest",
+                  "graphql",
+                  "grpc",
+                  "websocket",
+                  "other"
+                ]
+              },
+              "spec_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "auth": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "api_key",
+                  "oauth2",
+                  "other"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "sdk"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "language": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "package": {
+                "type": "object",
+                "properties": {
+                  "registry": {
+                    "type": "string",
+                    "enum": [
+                      "npm",
+                      "pypi",
+                      "crates",
+                      "rubygems",
+                      "go",
+                      "maven",
+                      "nuget",
+                      "packagist",
+                      "cocoapods",
+                      "swiftpm",
+                      "homebrew",
+                      "docker",
+                      "other"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "registry",
+                  "name"
+                ],
+                "additionalProperties": false
+              },
+              "repository_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "cli"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "install": {
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "manager": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "command": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    }
+                  },
+                  "required": [
+                    "manager",
+                    "command"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "repository_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "mcp"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "transport": {
+                "type": "string",
+                "enum": [
+                  "streamable_http",
+                  "sse",
+                  "stdio",
+                  "other"
+                ]
+              },
+              "package": {
+                "type": "object",
+                "properties": {
+                  "registry": {
+                    "type": "string",
+                    "enum": [
+                      "npm",
+                      "pypi",
+                      "crates",
+                      "rubygems",
+                      "go",
+                      "maven",
+                      "nuget",
+                      "packagist",
+                      "cocoapods",
+                      "swiftpm",
+                      "homebrew",
+                      "docker",
+                      "other"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "registry",
+                  "name"
+                ],
+                "additionalProperties": false
+              },
+              "registry_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "auth": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "api_key",
+                  "oauth2",
+                  "other"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "webhooks"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "integration"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "with": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "app"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "platform": {
+                "type": "string",
+                "enum": [
+                  "web",
+                  "ios",
+                  "android",
+                  "macos",
+                  "windows",
+                  "linux",
+                  "browser_extension",
+                  "hardware",
+                  "other"
+                ]
+              },
+              "store": {
+                "type": "string",
+                "enum": [
+                  "app_store",
+                  "play_store",
+                  "mac_app_store",
+                  "microsoft_store",
+                  "chrome_web_store",
+                  "firefox_addons",
+                  "other"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "repository"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "license": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9.+-]{1,64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "machine_readable"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "docs_url": {
+                "type": "string",
+                "maxLength": 2000,
+                "format": "uri"
+              },
+              "citations": {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "published_on": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "day"
+                            },
+                            "value": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "month"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "year"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          "required": [
+                            "precision",
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "precision": {
+                              "type": "string",
+                              "const": "unknown"
+                            }
+                          },
+                          "required": [
+                            "precision"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "first_party",
+                        "press",
+                        "registry",
+                        "filing",
+                        "app_store",
+                        "archive",
+                        "database",
+                        "social",
+                        "other"
+                      ]
+                    },
+                    "retrieved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                    },
+                    "archived_copy": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "maxLength": 2000,
+                          "format": "uri"
+                        },
+                        "captured_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "captured_at"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "capture_attempt_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "kind",
+                    "retrieved_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "llms_txt",
+                  "openapi",
+                  "agent_card",
+                  "mcp_manifest",
+                  "other"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "logo": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,80}\\.(?:png|jpe?g|webp)$"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "path",
+        "alt"
+      ],
+      "additionalProperties": false
+    },
+    "gallery": {
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,80}\\.(?:png|jpe?g|webp)$"
+          },
+          "alt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "caption": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "path",
+          "alt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "sources": {
+      "maxItems": 20,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "format": "uri"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "url",
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "launch": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "occurred_on": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "precision": {
+                  "type": "string",
+                  "const": "day"
+                },
+                "value": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                }
+              },
+              "required": [
+                "precision",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "precision": {
+                  "type": "string",
+                  "const": "month"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+                }
+              },
+              "required": [
+                "precision",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "precision": {
+                  "type": "string",
+                  "const": "year"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^\\d{4}$"
+                }
+              },
+              "required": [
+                "precision",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "precision": {
+                  "type": "string",
+                  "const": "unknown"
+                }
+              },
+              "required": [
+                "precision"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "date_basis": {
+          "type": "string",
+          "enum": [
+            "announced",
+            "effective"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "maxLength": 2000,
+              "format": "uri"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "locator": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "url",
+            "title",
+            "locator"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "title",
+        "summary",
+        "occurred_on",
+        "date_basis",
+        "source"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "tagline",
+    "description",
+    "website",
+    "access",
+    "categories",
+    "stage",
+    "pricing"
+  ],
+  "additionalProperties": false
+}

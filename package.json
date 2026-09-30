@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate.mjs",
+    "eligibility": "node scripts/eligibility.mjs",
     "new": "node scripts/new.mjs",
     "new:launch": "node scripts/new-launch.mjs"
   },

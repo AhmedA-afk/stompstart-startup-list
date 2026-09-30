@@ -1,142 +1,151 @@
+// The shape of every file: startups against the startup input schema, their images, and
+// launches against the launch input schema. The schemas and checks are exported from Stompstart
+// and pinned by digest in contract-source.json.
 import { createHash } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readdir, readFile, stat } from "node:fs/promises";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import YAML from "yaml";
+import { readImageHeader } from "../vendor/stompstart/modules/media/src/index.js";
 
-const ajv = new Ajv2020({ allErrors: true, strict: true });
+const root = new URL("../", import.meta.url);
+const source = JSON.parse(await readFile(new URL("contract-source.json", root), "utf8"));
+for (const [path, sha256] of Object.entries(source.files)) {
+  const bytes = await readFile(new URL(path, root));
+  if (createHash("sha256").update(bytes).digest("hex") !== sha256) {
+    throw new Error(`${path} differs from its recorded export.`);
+  }
+}
+const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
-const schemaBytes = await readFile(new URL("../profile.schema.json", import.meta.url));
-const source = JSON.parse(await readFile(new URL("../contract-source.json", import.meta.url), "utf8"));
-if (createHash("sha256").update(schemaBytes).digest("hex") !== source.schema_sha256) {
-  throw new Error("Profile schema differs from its recorded source export.");
-}
-const schema = JSON.parse(schemaBytes.toString("utf8"));
-const validate = ajv.compile(schema);
-const launchSchemaBytes = await readFile(new URL("../launch.schema.json", import.meta.url));
-if (createHash("sha256").update(launchSchemaBytes).digest("hex") !== source.launch_schema_sha256) {
-  throw new Error("Launch schema differs from its recorded source export.");
-}
-const validateLaunch = ajv.compile(JSON.parse(launchSchemaBytes.toString("utf8")));
-const root = new URL("../startups/", import.meta.url);
-const names = (await readdir(root)).sort();
+const schema = async (path) => ajv.compile(JSON.parse(await readFile(new URL(path, root), "utf8")));
+const validateStartup = await schema("startup-input.schema.json");
+const validateLaunch = await schema("launch-input.schema.json");
+
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+const MAX_IMAGES = 12;
+const MAX_EDGE = 1_600;
 const errors = [];
-const ids = new Map();
 
-function checkUrl(url, label, protocols = ["https:"]) {
-  if (url === undefined) return;
+async function categories() {
   try {
-    const parsed = new URL(url);
-    if (!protocols.includes(parsed.protocol) || parsed.username || parsed.password || parsed.hash) {
-      errors.push(`${label}: use an allowed URL without credentials or a fragment`);
-    }
+    const response = await fetch("https://stompstart.com/api/taxonomy", {
+      signal: AbortSignal.timeout(10_000),
+    });
+    const body = await response.json();
+    return new Set(body.taxonomy.categories.map((category) => category.id));
   } catch {
-    errors.push(`${label}: invalid URL`);
+    process.stderr.write("Could not read Stompstart's categories; skipping that check.\n");
+    return null;
   }
 }
 
-function semantic(profile, filename) {
-  if (filename !== `${profile.slug}.yaml`) errors.push(`${filename}: filename must match slug`);
-  if (profile.listing_kind !== "discovery") errors.push(`${filename}: PR contributions must be discoveries`);
-  if (profile.product.name === "Example Product" || profile.website.url?.startsWith("https://example.com/")) {
-    errors.push(`${filename}: replace the example product and website`);
-  }
-  for (const key of ["startup_id", "subject_id"]) {
-    const id = profile[key];
-    if (id === "stp_aaaaaaaaaaaaaaaaaaaaaaaaaa" || id === "sub_bbbbbbbbbbbbbbbbbbbbbbbbbb") {
-      errors.push(`${filename}: replace the sample ${key}`);
-    }
-    if (ids.has(id)) errors.push(`${filename}: ${key} is already used by ${ids.get(id)}`);
-    else ids.set(id, filename);
-  }
-  if (profile.website.state !== "known") errors.push(`${filename}: discovery requires an official website`);
-  if (profile.access.state !== "available") errors.push(`${filename}: discovery requires browse, signup, demo or waitlist`);
-  if (profile.classification.stage === "unknown") errors.push(`${filename}: discovery requires a known stage`);
-  const categories = profile.classification.categories;
-  if (categories.join("\0") !== [...new Set(categories)].sort().join("\0")) {
-    errors.push(`${filename}: categories must be unique and sorted`);
-  }
-  const sourceIds = profile.sources.map((source) => source.source_id);
-  if (new Set(sourceIds).size !== sourceIds.length) errors.push(`${filename}: source IDs must be unique`);
-  const links = profile.links.map((link) => `${link.kind}:${link.url}`);
-  if (new Set(links).size !== links.length) errors.push(`${filename}: links must be unique`);
-  if (profile.founded.state === "known" && profile.launched.state === "known" && profile.launched.date < profile.founded.date) {
-    errors.push(`${filename}: launch date cannot precede founding`);
-  }
-  checkUrl(profile.website.url, `${filename}: website`);
-  checkUrl(profile.access.url, `${filename}: access`);
-  checkUrl(profile.pricing.pricing_url, `${filename}: pricing URL`);
-  for (const [index, founder] of (profile.founders.people ?? []).entries()) {
-    checkUrl(founder.public_url, `${filename}: founder ${index + 1} URL`);
-  }
-  for (const [index, link] of profile.links.entries()) checkUrl(link.url, `${filename}: link ${index + 1}`);
-  for (const [index, source] of profile.sources.entries()) {
-    checkUrl(source.url, `${filename}: source ${index + 1}`, ["http:", "https:"]);
-  }
-}
-
-for (const name of names) {
-  if (!name.endsWith(".yaml")) {
-    if (name !== ".gitkeep") errors.push(`startups/${name}: only .yaml files are allowed`);
-    continue;
-  }
-  const file = join(fileURLToPath(root), name);
-  const document = YAML.parseDocument(await readFile(file, "utf8"), { uniqueKeys: true, strict: true });
+function parse(text, label) {
+  const document = YAML.parseDocument(text, { uniqueKeys: true, strict: true });
   if (document.errors.length) {
-    errors.push(...document.errors.map((error) => `${name}: ${error.message}`));
-    continue;
+    errors.push(...document.errors.map((error) => `${label}: ${error.message}`));
+    return null;
   }
-  const profile = document.toJS();
-  if (!validate(profile)) {
-    errors.push(...(validate.errors ?? []).map((error) => `${name}: ${error.instancePath || "/"} ${error.message}`));
-    continue;
+  const fields = document.toJS({ maxAliasCount: 0 });
+  if (fields && typeof fields === "object" && "input_contract" in fields) {
+    errors.push(`${label}: the file holds fields only; remove input_contract`);
+    return null;
   }
-  semantic(profile, name);
+  return fields;
 }
 
-const launchRoot = new URL("../launches/", import.meta.url);
-const launchNames = (await readdir(launchRoot)).sort();
-const launchIds = new Map();
-for (const name of launchNames) {
+function shapeErrors(validate, label) {
+  return (validate.errors ?? []).map((error) => `${label}: ${error.instancePath || "/"} ${error.message}`);
+}
+
+const known = await categories();
+const startups = new URL("startups/", root);
+for (const name of (await readdir(startups)).sort()) {
   if (name === ".gitkeep") continue;
-  if (!/^([a-z0-9]+(?:-[a-z0-9]+)*)-(lch_[0-9a-z]{26})\.yaml$/u.test(name)) {
-    errors.push(`launches/${name}: use <startup-slug>-<launch-id>.yaml`);
+  const entry = await stat(new URL(name, startups));
+  if (entry.isDirectory()) {
+    if (!SLUG.test(name)) errors.push(`startups/${name}/: name the folder after its startup's slug`);
     continue;
   }
-  const file = join(fileURLToPath(launchRoot), name);
-  const document = YAML.parseDocument(await readFile(file, "utf8"), { uniqueKeys: true, strict: true });
-  if (document.errors.length) {
-    errors.push(...document.errors.map((error) => `launches/${name}: ${error.message}`));
+  const slug = name.replace(/\.yaml$/u, "");
+  if (!name.endsWith(".yaml") || !SLUG.test(slug) || slug.length > 80) {
+    errors.push(`startups/${name}: use startups/<slug>.yaml with a lowercase slug`);
     continue;
   }
-  const proposal = document.toJS({ maxAliasCount: 0 });
-  if (!validateLaunch(proposal)) {
-    errors.push(...(validateLaunch.errors ?? []).map((error) =>
-      `launches/${name}: ${error.instancePath || "/"} ${error.message}`));
+  const label = `startups/${name}`;
+  const fields = parse(await readFile(new URL(name, startups), "utf8"), label);
+  if (!fields) continue;
+  if (!validateStartup(fields)) {
+    errors.push(...shapeErrors(validateStartup, label));
     continue;
   }
-  if (name !== `${proposal.startup_slug}-${proposal.launch_id}.yaml`) {
-    errors.push(`launches/${name}: filename differs from the startup and launch identity`);
+  if (fields.name === "Example Product" || new URL(fields.website).hostname === "example.com") {
+    errors.push(`${label}: replace the example product and its addresses`);
   }
-  if (
-    proposal.launch_id === "lch_aaaaaaaaaaaaaaaaaaaaaaaaaa" ||
-    proposal.startup_id === "stp_aaaaaaaaaaaaaaaaaaaaaaaaaa" ||
-    proposal.title === "Example Product 2.0" ||
-    (URL.canParse(proposal.source_url) && new URL(proposal.source_url).hostname === "example.com")
-  ) {
-    errors.push(`launches/${name}: replace the example identity, claims and source`);
+  if (known) {
+    for (const category of fields.categories) {
+      if (!known.has(category)) errors.push(`${label}: ${category} is not a Stompstart category`);
+    }
   }
-  const prior = launchIds.get(proposal.launch_id);
-  if (prior) errors.push(`launches/${name}: launch ID is already used by ${prior}`);
-  else launchIds.set(proposal.launch_id, name);
-  checkUrl(proposal.source_url, `launches/${name}: source`, ["http:", "https:"]);
+  if ((fields.surfaces ?? []).some((surface) => surface.citations !== undefined)) {
+    errors.push(`${label}: surfaces carry no citations; editors attach evidence`);
+  }
+  const named = [fields.logo, ...(fields.gallery ?? [])].filter(Boolean);
+  if (named.length > MAX_IMAGES) errors.push(`${label}: name at most ${MAX_IMAGES} images, logo included`);
+  let beside = [];
+  try {
+    beside = (await readdir(new URL(`${slug}/`, startups))).filter((file) => file !== ".gitkeep");
+  } catch {
+    beside = [];
+  }
+  const paths = new Set(named.map((image) => image.path));
+  for (const file of beside) {
+    if (!paths.has(file)) errors.push(`startups/${slug}/${file}: the startup file does not name this image`);
+  }
+  for (const image of named) {
+    if (!beside.includes(image.path)) {
+      errors.push(`${label}: ${image.path} is missing from startups/${slug}/`);
+      continue;
+    }
+    try {
+      const header = readImageHeader(await readFile(new URL(`${slug}/${image.path}`, startups)));
+      if (Math.max(header.width, header.height) > MAX_EDGE) {
+        errors.push(`startups/${slug}/${image.path}: at most ${MAX_EDGE} pixels on its long side`);
+      }
+    } catch (error) {
+      errors.push(`startups/${slug}/${image.path}: ${error.message}`);
+    }
+  }
 }
 
-if (errors.length) {
+const launches = new URL("launches/", root);
+for (const folder of (await readdir(launches)).sort()) {
+  if (folder === ".gitkeep") continue;
+  if (!SLUG.test(folder)) {
+    errors.push(`launches/${folder}: use launches/<startup-slug>/<name>.yaml`);
+    continue;
+  }
+  for (const name of (await readdir(new URL(`${folder}/`, launches))).sort()) {
+    const label = `launches/${folder}/${name}`;
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.yaml$/u.test(name)) {
+      errors.push(`${label}: use a lowercase .yaml name`);
+      continue;
+    }
+    const fields = parse(await readFile(new URL(`${folder}/${name}`, launches), "utf8"), label);
+    if (!fields) continue;
+    if (!validateLaunch(fields)) {
+      errors.push(...shapeErrors(validateLaunch, label));
+      continue;
+    }
+    if (fields.title === "Example Product 2.0" || new URL(fields.source.url).hostname === "example.com") {
+      errors.push(`${label}: replace the example launch and its source`);
+    }
+  }
+}
+
+if (errors.length > 0) {
   process.stderr.write(`${errors.join("\n")}\n`);
   process.exitCode = 1;
 } else {
-  process.stdout.write(`Validated ${names.filter((name) => name.endsWith(".yaml")).length} startup profiles and ${launchNames.filter((name) => name.endsWith(".yaml")).length} launch proposals.\n`);
+  process.stdout.write("Every startup and launch file has a valid shape.\n");
 }

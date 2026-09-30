@@ -1,44 +1,70 @@
 # Stompstart startup list
 
-Contribute a complete startup profile for free by opening a pull request that adds
-`startups/<slug>.yaml`. Run `npm ci`, then `npm run new -- your-startup-slug`
-to create a profile with stable random IDs. Replace its sample facts and URLs,
-then run `npm run validate` before opening the PR. The
-[example](examples/example.yaml) explains the fields.
+Propose a new startup for [Stompstart](https://stompstart.com) by pull request. One pull
+request adds one startup: `startups/<slug>.yaml`, with its logo and product images in
+`startups/<slug>/`.
 
-For a first release or a substantial update to a startup already on Stompstart,
-keep its existing profile and propose a separate launch entry. Use
-`npm run new:launch -- <published-startup-slug> <startup-id>` and edit the
-generated `launches/<slug>-<launch-id>.yaml`. The startup ID is available in
-the public record at `/api/startups/<slug>`. One pull request changes one
-profile or one launch file. A launch proposal needs a public announcement or
-release page and the most precise date that source supports. The
-[launch example](examples/launch.yaml) and [schema](launch.schema.json) show
-the compact shape. Fix a launch by editing its file with the same `launch_id`.
-Keep the same `startup_id` and `subject_id` when correcting a profile. The file
-name and `slug` must also stay fixed after publication so existing links survive.
+## What gets listed
 
-This repository contains public authoring data only. Do not include email
-addresses, private contact information, payment details, access tokens, or
-unlicensed media. Put public sources in `sources` and describe unknown facts as
-`unknown`; do not invent them. An official website and a usable browse, signup,
-demo, or waitlist route are required for a new discovery. A prelaunch product is
-welcome.
+Stompstart lists startups at launch. A startup is eligible when it first appeared in public in the
+six months before your pull request opened: its first release, or for a prelaunch product, the
+opening of its waitlist or signup. It needs:
 
-Validation here gives early feedback on the public shape. It does not publish a
-listing or verify its claims. Stompstart separately captures evidence, reviews
-the exact revision, and admits eligible records into a signed release. Payment
-for priority processing never changes factual eligibility, ranking, or approval.
-Corrections are free. This repo has no payment, private contact, capture, or
-release-signing state.
+- an official website on its own domain, and a way in that works: signup, waitlist, demo,
+  download, install or browse;
+- its launch, with the page that dates it (a prelaunch product leaves the launch out);
+- its own logo, from its site or press kit: PNG or WebP, square or close to it, 256 to 1,600
+  pixels;
+- at least one image of the product, 1,200 to 1,600 pixels wide: a screenshot or the site's own
+  hero or share image;
+- a description in your own words, with sources for its claims;
+- to be new here: not on Stompstart already, live or in the archive, and not proposed by an
+  earlier open pull request. The first open pull request for a startup holds it.
 
-The [schema](profile.schema.json) is generated from Stompstart's
-`startupProfileSchema` at the commit recorded in [contract-source.json](contract-source.json).
-The private product validator remains authoritative for admission.
-The launch schema is likewise exported from the product contract and checked
-against its digest in `contract-source.json`.
+## Propose a startup
 
-Profile text is [CC BY 4.0](LICENSE-DATA.md); validator code is
-[MIT](LICENSE-CODE). Published profiles credit the public PR author and link
-to the contributing PR. [Contribution terms](CONTRIBUTING.md) explain what can
-be submitted, how credit works, and how corrections work.
+```sh
+npm ci
+npm run new -- your-startup-slug
+```
+
+Replace every sample value in `startups/your-startup-slug.yaml`, put the logo and product images
+in `startups/your-startup-slug/` under the names the file gives them, then check it:
+
+```sh
+npm run validate
+npm run eligibility -- your-startup-slug
+```
+
+The [example](examples/startup.yaml) explains the fields and the
+[schema](startup-input.schema.json) is exact. `eligibility` needs `cwebp` and `dwebp` (the
+`webp` package) to compare the logo with the site's own icons. The pull request runs both checks
+again; a check marked for review passes, and a reviewer looks at it.
+
+## After the pull request
+
+Passing checks is not publication. Stompstart captures the sources, reviews the exact revision and
+publishes eligible startups in a signed release. The startup's page on stompstart.com then credits
+the pull request and its author. Pull requests are not merged: publication is the result. If a
+review finds a problem, the pull request gets a finding to fix; amend the same pull request.
+Payment for priority review never changes eligibility, placement or approval, and corrections are
+always free.
+
+## Launches for startups already listed
+
+A first release or a major update to a startup already on Stompstart is a launch file:
+
+```sh
+npm run new:launch -- published-startup-slug launch-name
+```
+
+Edit `launches/published-startup-slug/launch-name.yaml` from the [launch
+example](examples/launch.yaml). A launch cites the page that announced it and the passage that
+dates it; a routine changelog entry is not a launch.
+
+## Licences
+
+Text you write here is [CC BY 4.0](LICENSE-DATA.md). Logos and product images stay their owners';
+they identify the startup. The checks and scripts are [MIT](LICENSE-CODE). The schemas and checks
+are exported from Stompstart, and [contract-source.json](contract-source.json) pins the exact
+export. See [CONTRIBUTING](CONTRIBUTING.md) for credit and corrections.

@@ -6,7 +6,8 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 Credit the contributors and link to the relevant file's repository history and this
 license when reusing or adapting their authored text. Indicate changes. The
 license does not grant trademark, privacy, publicity, or third-party media
-rights. URLs and factual statements may not be copyrightable, but source
+rights. Logos and product images beside a startup's file are that startup's
+own, included to identify it; they are not licensed under CC BY 4.0. URLs and factual statements may not be copyrightable, but source
 attribution and the admission record are still kept for provenance.
 
 Validator code and supporting software files are licensed under `LICENSE-CODE`.

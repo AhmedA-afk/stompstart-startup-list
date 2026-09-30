@@ -1,13 +1,13 @@
-proposal_contract: stompstart.launch-proposal/v1alpha1
-startup_slug: example-product
-launch_id: lch_aaaaaaaaaaaaaaaaaaaaaaaaaa
-startup_id: stp_aaaaaaaaaaaaaaaaaaaaaaaaaa
+# A launch of a startup already on Stompstart: launches/<startup-slug>/<name>.yaml.
+# Copy with `npm run new:launch -- <startup-slug> <name>`, then replace every sample value.
 kind: major_update
 title: Example Product 2.0
-summary: Describe what changed for users in this release.
+summary: Describe what changed for people using it in this release.
 occurred_on:
-  precision: unknown
+  precision: month
+  value: "2026-09"
 date_basis: announced
-source_url: https://example.com/launch
-source_title: Official launch announcement
-source_locator: Opening announcement
+source:
+  url: https://example.com/blog/two-point-oh
+  title: Example Product 2.0
+  locator: The announcement's opening paragraph

@@ -2,24 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "proposal_contract": {
-      "type": "string",
-      "const": "stompstart.launch-proposal/v1alpha1"
-    },
-    "startup_slug": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 80,
-      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-    },
-    "launch_id": {
-      "type": "string",
-      "pattern": "^lch_[0-9a-z]{26}$"
-    },
-    "startup_id": {
-      "type": "string",
-      "pattern": "^stp_[0-9a-z]{26}$"
-    },
     "kind": {
       "type": "string",
       "enum": [
@@ -113,37 +95,43 @@
       "type": "string",
       "enum": [
         "announced",
-        "available"
+        "effective"
       ]
     },
-    "source_url": {
-      "type": "string",
-      "format": "uri"
-    },
-    "source_title": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 200
-    },
-    "source_locator": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 500
+    "source": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "format": "uri"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "url",
+        "title",
+        "locator"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
-    "proposal_contract",
-    "startup_slug",
-    "launch_id",
-    "startup_id",
     "kind",
     "title",
     "summary",
     "occurred_on",
     "date_basis",
-    "source_url",
-    "source_title",
-    "source_locator"
+    "source"
   ],
   "additionalProperties": false
 }

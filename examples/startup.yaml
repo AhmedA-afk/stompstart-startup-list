@@ -1,0 +1,55 @@
+# Copy with `npm run new -- your-startup-slug`, then replace every sample value.
+# The file holds the startup's facts; Stompstart adds identifiers and evidence at review.
+name: Example Product
+tagline: A shared plan board for small teams
+description: >-
+  A plan board for teams of two to ten. Each project gets one page with its
+  goals, owners and a weekly check-in, so the plan lives in one place.
+problem: Plans for small teams end up split across chat, documents and spreadsheets.
+audience:
+  - Small product teams
+website: https://example.com/
+access:
+  - kind: signup
+    url: https://example.com/signup
+categories:
+  - productivity
+stage: live
+pricing:
+  model: free
+company:
+  name: Example Company
+  relationship: independent
+location:
+  country: GB
+  city: London
+founded:
+  precision: month
+  value: "2026-03"
+platforms:
+  - web
+links:
+  - kind: blog
+    url: https://example.com/blog
+# The startup's own logo and product images sit beside this file, in startups/<slug>/.
+logo:
+  path: logo.png
+  alt: The Example Product logo, a green square with a white check mark
+gallery:
+  - path: board.png
+    alt: A project page on Example Product with goals, owners and this week's check-in
+sources:
+  - url: https://example.com/
+    title: Official website
+# The first release, and the page that dates it. A prelaunch product leaves this out.
+launch:
+  title: Example Product opens to everyone
+  summary: The public release after a two-month private beta.
+  occurred_on:
+    precision: day
+    value: "2026-08-12"
+  date_basis: effective
+  source:
+    url: https://example.com/blog/launch
+    title: Example Product is live
+    locator: First paragraph, which gives the release date

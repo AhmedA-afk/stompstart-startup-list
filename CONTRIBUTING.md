@@ -1,30 +1,42 @@
 # Contributing a startup
 
-1. Create a profile with `npm run new -- your-startup-slug` and fill in all
-   required facts. Keep claims specific, cite public source URLs, and use
-   explicit unknown states where the schema permits them.
-2. Run `npm run validate` and open a pull request. Corrections use the same
-   file and stable identifiers. Do not copy another startup's identifiers.
-3. By submitting authored profile text, confirm that you can license that text
-   under [CC BY 4.0](LICENSE-DATA.md). Do not put third-party images, logos,
-   screenshots, personal contact information, credentials, or payment data in
-   the repository. Media rights are handled through a separate private path.
+1. Create the files with `npm run new -- your-startup-slug`, fill in the facts, and add the logo
+   and product images beside the file. Keep claims specific and cite public sources. Leave out
+   what you cannot establish rather than guessing.
+2. Run `npm run validate` and `npm run eligibility -- your-startup-slug`, then open one pull
+   request for the one startup.
+3. Keep the file name and slug fixed once the startup is published, so its links keep working.
+   Corrections edit the same file.
 
-If a profile is published, Stompstart credits the PR author by their public
-GitHub username and links the contributing PR and CC BY 4.0 license from the
-profile page. The published record may adapt the proposed text after factual
-review; it keeps that credit separate from sources used to verify claims. If
-the default credit is inappropriate, say so in the PR before publication so
-the review can hold the record until attribution is resolved.
+## The checks
 
-Passing CI is a shape check, not admission. Stompstart verifies the exact
-revision and evidence before a public release. An inaccessible website alone
-does not prove a startup closed. If a review identifies an error, amend the
-same PR; payment is never required to correct a record.
+`validate` checks the shape of every file against the exported schemas and that each startup's
+images are exactly the ones its file names. `eligibility` checks the startup a pull request adds:
 
-To propose a launch for an already published startup, use
-`npm run new:launch -- <slug> <startup-id>`. A launch is a dated first release
-or major product update, not a second startup listing or a routine changelog
-item. Cite the original source and identify the passage that supports the
-claim. Use `precision: unknown` when the date cannot be established. Launch
-text has the same CC BY 4.0 terms and contributor credit as profile text.
+- **duplicate**: its domain and name are not on Stompstart or in an earlier open pull request;
+- **website** and **access**: the site answers on its own domain, is not parked, and the ways in
+  work;
+- **launch-window**: the launch falls in the six months before the pull request opened, and its
+  source states the date; a site archived long before the window is marked for review;
+- **logo**: PNG or WebP, 256 to 1,600 pixels, square or close to it, matched against the icons the
+  site itself serves;
+- **brand-image**: at least one product image 1,200 to 1,600 pixels wide;
+- **copy**: your own words, not the site's; no em dashes; hype is marked for review;
+- **links**: no tracking or referral parameters and no contact details.
+
+A failed check blocks review until it is fixed. A check marked for review passes to a reviewer
+with its reason.
+
+## Credit and licence
+
+By submitting text, you confirm you wrote it and can license it under [CC BY 4.0](LICENSE-DATA.md).
+Logos and product images must be the startup's own, taken from its site or press kit; do not make,
+redraw or generate them. Do not include private contact details, credentials or payment data.
+
+A published profile credits the pull request's author by public GitHub username and links the pull
+request and the licence. The published record may adapt the text after review; the sources used to
+verify it are kept separately. If the credit should differ, say so in the pull request before
+publication.
+
+Passing checks is not admission. Stompstart verifies the exact revision and its evidence before a
+release. A website that no longer answers does not by itself prove a startup closed.

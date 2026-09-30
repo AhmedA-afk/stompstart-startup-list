@@ -1,0 +1,62 @@
+---
+name: Cuey
+tagline: Cross-check ChatGPT, Claude and Gemini answers in one tab
+description: >-
+  Cuey is a Chrome extension that checks the answer your AI gives against more
+  than twenty other models, side by side, and points out where they disagree or
+  what your model missed. It also carries your chat history and context across
+  ChatGPT, Claude and Gemini, so a second opinion starts from what you already
+  told your first model. The extension runs in the sidebar of the AI tools you
+  already use; comparing, cross-checking and multi-language support are free
+  with no account required.
+problem: >-
+  AI models answer in the same confident tone whether they are right or wrong,
+  and getting a trustworthy second opinion means copying prompts between tabs
+  and repeating the same context.
+audience:
+  - People who rely on AI answers for consequential work
+website: https://cuey.io/
+access:
+  - kind: install
+    url: https://chromewebstore.google.com/detail/compare-chatgpt-claude-ge/gdbiinmclpikjlmfnekmggbddgmlglia
+categories:
+  - productivity
+  - ai-and-agents
+stage: live
+pricing:
+  model: freemium
+company:
+  name: Cuey
+  relationship: independent
+location:
+  country: US
+  city: Palo Alto
+logo:
+  path: logo.png
+  alt: The Cuey logo, a dark circle with a white crescent and a pink swoosh
+gallery:
+  - path: product.png
+    alt: The Cuey sidebar comparing answers from Claude, Gemini and Grok next to a ChatGPT conversation
+sources:
+  - url: https://cuey.io/
+    title: Cuey official website
+  - url: https://cuey.io/pricing
+    title: Cuey pricing plans
+  - url: https://www.producthunt.com/products/cuey-2
+    title: Cuey launch on Product Hunt
+  - url: https://chromewebstore.google.com/detail/compare-chatgpt-claude-ge/gdbiinmclpikjlmfnekmggbddgmlglia
+    title: Cuey on the Chrome Web Store
+  - url: https://www.linkedin.com/company/cuey
+    title: Cuey company page on LinkedIn
+launch:
+  title: Cuey launches on Product Hunt
+  summary: Public launch of the Cuey Chrome extension, finishing third product of the day.
+  occurred_on:
+    precision: day
+    value: "2026-09-27"
+  date_basis: announced
+  source:
+    url: https://www.producthunt.com/products/cuey-2
+    title: Cuey on Product Hunt
+    locator: Page metadata dates the launch post to September 27, 2026
+---
